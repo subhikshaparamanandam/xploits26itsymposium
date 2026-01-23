@@ -227,9 +227,18 @@ const App: React.FC = () => {
              
              <div className="reveal flex flex-col items-center">
                <span className="text-[7px] md:text-[9px] font-black text-gray-400 uppercase tracking-[0.6em] mb-2 md:mb-4 bg-white/5 px-3 py-1 rounded-full border border-white/5">Autonomous Institution • NBA Accredited</span>
-               <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-heading font-black metallic-text tracking-tighter uppercase leading-tight drop-shadow-2xl">
-                 SRM Valliammai Engineering College
-               </h2>
+               
+               <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                 {/* Logo Pair in Front */}
+                 <div className="flex items-center space-x-4 md:space-x-6">
+                   <img src="input_file_0.png" alt="SRM Logo" className="h-10 md:h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:scale-110 transition-transform duration-500" />
+                   <img src="input_file_1.png" alt="VEC Logo" className="h-10 md:h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:scale-110 transition-transform duration-500" />
+                 </div>
+
+                 <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-heading font-black metallic-text tracking-tighter uppercase leading-tight drop-shadow-2xl text-center md:text-left">
+                   SRM Valliammai Engineering College
+                 </h2>
+               </div>
              </div>
              
              <div className="reveal mt-4 md:mt-6" style={{ transitionDelay: '200ms' }}>
@@ -254,9 +263,19 @@ const App: React.FC = () => {
                 <div className="text-3xl sm:text-5xl md:text-7xl mt-1 md:mt-2 metallic-text tracking-[0.4em] md:tracking-[0.6em] font-light opacity-90">26</div>
               </h1>
             </div>
-            <p className="text-[10px] sm:text-[12px] md:text-sm text-gray-100 tracking-[0.3em] sm:tracking-[0.6em] uppercase max-w-2xl mx-auto leading-relaxed font-black border-y border-white/20 py-3 md:py-5 backdrop-blur-md px-6 md:px-10 rounded-full shadow-2xl">
-              National Level Technical Symposium • 14.02.2026
-            </p>
+            
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 px-6 md:px-10 py-3 md:py-5 backdrop-blur-md rounded-full border-y border-white/20 shadow-2xl">
+              <p className="text-[10px] sm:text-[12px] md:text-sm text-gray-100 tracking-[0.3em] sm:tracking-[0.6em] uppercase leading-relaxed font-black">
+                National Level Technical Symposium • 14.02.2026
+              </p>
+              
+              {/* Logo Pair at the End of Tagline */}
+              <div className="flex items-center space-x-3 md:space-x-4">
+                <div className="w-[1px] h-6 bg-white/20 hidden md:block"></div>
+                <img src="input_file_0.png" alt="SRM Logo" className="h-6 md:h-8 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                <img src="input_file_1.png" alt="VEC Logo" className="h-6 md:h-8 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+              </div>
+            </div>
           </div>
 
           <div className="pt-2 flex flex-col items-center transform scale-[0.85] sm:scale-90 md:scale-100">

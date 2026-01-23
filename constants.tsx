@@ -136,7 +136,7 @@ export const EVENTS: EventData[] = [
 
 export const STAFF_COORDINATORS: Coordinator[] = [
   {
-    name: 'Dr. Ramesh Babu',
+    name: 'Dr. Narayanan',
     designation: 'HOD',
     department: 'Dept. of Information Technology',
     image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop'
