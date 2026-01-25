@@ -228,13 +228,78 @@ const HeroScrollSequence: React.FC<HeroScrollSequenceProps> = ({
             }
         };
 
+        // Touch handling state
+        let touchStartY = 0;
+
+        const handleTouchStart = (e: TouchEvent) => {
+            touchStartY = e.touches[0].clientY;
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            const container = containerRef.current;
+            if (!container) return;
+
+            const rect = container.getBoundingClientRect();
+            const isHeroInView = rect.top <= 0 && rect.bottom > 0;
+
+            if (!isHeroInView) {
+                setIsInView(false);
+                return;
+            }
+
+            setIsInView(true);
+
+            const touchY = e.touches[0].clientY;
+            const deltaY = touchStartY - touchY; // Calculate delta like wheel (drag up = scroll down = positive delta)
+            touchStartY = touchY; // Update for next move event
+
+            const scrollingDown = deltaY > 0;
+            const scrollingUp = deltaY < 0;
+            const atFirstFrame = currentFrameRef.current === 0;
+            const atLastFrame = currentFrameRef.current >= activeCount - 1;
+
+            if ((atLastFrame && scrollingDown) || (atFirstFrame && scrollingUp && rect.top >= 0)) {
+                setIsLocked(false);
+                return;
+            }
+
+            // Lock scroll if inside animation
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+            setIsLocked(true);
+
+            accumulatedDelta.current += deltaY * 3; // Multiplier to match touch sensitivity
+            const framesToMove = Math.floor(accumulatedDelta.current / SCROLL_SENSITIVITY);
+
+            if (framesToMove !== 0) {
+                accumulatedDelta.current = accumulatedDelta.current % SCROLL_SENSITIVITY;
+
+                const newFrame = Math.max(0, Math.min(activeCount - 1, currentFrameRef.current + framesToMove));
+
+                if (newFrame !== currentFrameRef.current) {
+                    currentFrameRef.current = newFrame;
+                    requestAnimationFrame(() => {
+                        drawFrame(newFrame);
+                        if (overlayRef.current) {
+                            const opacity = Math.max(0, 1 - (newFrame / (activeCount * 0.1)));
+                            overlayRef.current.style.opacity = opacity.toString();
+                        }
+                    });
+                }
+            }
+        };
+
         window.addEventListener('wheel', handleWheel, { passive: false });
-        // Use passive scroll listener for better performance
         window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('touchstart', handleTouchStart, { passive: false });
+        window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchmove', handleTouchMove);
         };
     }, [isFullyLoaded, activeCount, drawFrame]);
 
