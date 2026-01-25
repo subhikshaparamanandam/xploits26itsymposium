@@ -1,171 +1,244 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>XPLOITS 26 | National Level Technical Symposium</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              fire: {
-                light: '#FFD27D',
-                DEFAULT: '#FF8A00',
-                dark: '#FF4500',
-              },
-              ice: {
-                light: '#AEEBFF',
-                DEFAULT: '#00C6FF',
-                dark: '#0072FF',
-              },
-              brand: {
-                bg: '#050505',
-                alt: '#0B0F14',
-                text: '#EAEAEA'
-              }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XPLOITS 26 | National Level Technical Symposium</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fire: {
+              light: '#FFD27D',
+              DEFAULT: '#FF8A00',
+              dark: '#FF4500',
             },
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              heading: ['Space Grotesk', 'sans-serif'],
+            ice: {
+              light: '#AEEBFF',
+              DEFAULT: '#00C6FF',
+              dark: '#0072FF',
             },
-            backgroundImage: {
-              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-            }
+            brand: {
+              bg: '#050505',
+              alt: '#0B0F14',
+              text: '#EAEAEA'
+            },
+            background: 'var(--color-background)',
+            foreground: 'var(--color-foreground)'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Space Grotesk', 'sans-serif'],
+          },
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
           }
         }
       }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      body {
-        background-color: #050505;
-        color: #EAEAEA;
-        overflow-x: hidden;
-      }
-      .glass {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-      }
-      .fire-glow:hover {
-        box-shadow: 0 0 30px rgba(255, 69, 0, 0.3);
-        border-color: #FF4500;
-      }
-      .ice-glow:hover {
-        box-shadow: 0 0 30px rgba(0, 114, 255, 0.3);
-        border-color: #0072FF;
-      }
-      @keyframes breathe {
-        0%, 100% { opacity: 0.9; transform: scale(1); filter: drop-shadow(0 0 15px rgba(255,255,255,0.2)); }
-        50% { opacity: 1; transform: scale(1.03); filter: drop-shadow(0 0 35px rgba(255,255,255,0.5)); }
-      }
-      .logo-breathe {
-        animation: breathe 5s ease-in-out infinite;
-      }
-      @keyframes float-ember {
-        0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-        50% { opacity: 1; }
-        100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-      }
-      .ember {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        background: #FF4500;
-        border-radius: 50%;
-        filter: blur(1px);
-        pointer-events: none;
-        animation: float-ember linear infinite;
-      }
-      @keyframes scroll-glitch {
-        0% { filter: hue-rotate(0deg) contrast(1) brightness(1); transform: scale(1.05) translate(0); }
-        10% { filter: hue-rotate(180deg) contrast(2) brightness(1.5); transform: scale(1.06) translate(-4px, 2px); }
-        20% { filter: hue-rotate(0deg) contrast(1.5) brightness(1); transform: scale(1.04) translate(4px, -2px); }
-        30% { filter: hue-rotate(180deg) contrast(1) brightness(2); transform: scale(1.05) translate(0); }
-        100% { filter: hue-rotate(0deg) contrast(1) brightness(1); transform: scale(1.05) translate(0); }
-      }
-      .glitch-effect {
-        animation: scroll-glitch 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-      }
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #050505;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #333;
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #444;
-      }
-      .hero-split {
-        background: radial-gradient(circle at 0% 50%, rgba(255,69,0,0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 100% 50%, rgba(0,114,255,0.15) 0%, transparent 50%),
-                    #050505;
-      }
-      .metallic-text {
-        background: linear-gradient(135deg, #ffffff 0%, #a1a1a1 50%, #ffffff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      background-color: #050505;
+      color: #EAEAEA;
+      overflow-x: hidden;
+    }
+
+    :root {
+      --bg-dark: #000000;
+      --color-background: var(--bg-dark);
+      --color-foreground: #ffffff;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .fire-glow:hover {
+      box-shadow: 0 0 30px rgba(255, 69, 0, 0.3);
+      border-color: #FF4500;
+    }
+
+    .ice-glow:hover {
+      box-shadow: 0 0 30px rgba(0, 114, 255, 0.3);
+      border-color: #0072FF;
+    }
+
+    @keyframes breathe {
+
+      0%,
+      100% {
+        opacity: 0.9;
+        transform: scale(1);
+        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
       }
 
-      /* Scroll Reveal Classes */
-      .reveal {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-      .reveal.active {
+      50% {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1.03);
+        filter: drop-shadow(0 0 35px rgba(255, 255, 255, 0.5));
       }
-      .reveal-left {
+    }
+
+    .logo-breathe {
+      animation: breathe 5s ease-in-out infinite;
+    }
+
+    @keyframes float-ember {
+      0% {
+        transform: translateY(0) rotate(0deg);
         opacity: 0;
-        transform: translateX(-50px);
-        transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
       }
-      .reveal-left.active {
+
+      50% {
         opacity: 1;
-        transform: translateX(0);
       }
-      .reveal-right {
+
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
         opacity: 0;
-        transform: translateX(50px);
-        transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
       }
-      .reveal-right.active {
-        opacity: 1;
-        transform: translateX(0);
+    }
+
+    .ember {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #FF4500;
+      border-radius: 50%;
+      filter: blur(1px);
+      pointer-events: none;
+      animation: float-ember linear infinite;
+    }
+
+    @keyframes scroll-glitch {
+      0% {
+        filter: hue-rotate(0deg) contrast(1) brightness(1);
+        transform: scale(1.05) translate(0);
       }
-      .reveal-scale {
-        opacity: 0;
-        transform: scale(0.95);
-        transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+
+      10% {
+        filter: hue-rotate(180deg) contrast(2) brightness(1.5);
+        transform: scale(1.06) translate(-4px, 2px);
       }
-      .reveal-scale.active {
-        opacity: 1;
-        transform: scale(1);
+
+      20% {
+        filter: hue-rotate(0deg) contrast(1.5) brightness(1);
+        transform: scale(1.04) translate(4px, -2px);
       }
-      
-      #scroll-progress {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 2px;
-        background: linear-gradient(to right, #FF8A00, #00C6FF);
-        z-index: 1001;
-        width: 0%;
-        transition: width 0.1s ease-out;
+
+      30% {
+        filter: hue-rotate(180deg) contrast(1) brightness(2);
+        transform: scale(1.05) translate(0);
       }
-    </style>
+
+      100% {
+        filter: hue-rotate(0deg) contrast(1) brightness(1);
+        transform: scale(1.05) translate(0);
+      }
+    }
+
+    .glitch-effect {
+      animation: scroll-glitch 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #050505;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #444;
+    }
+
+    .hero-split {
+      background: radial-gradient(circle at 0% 50%, rgba(255, 69, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 50%, rgba(0, 114, 255, 0.15) 0%, transparent 50%),
+        #050505;
+    }
+
+    .metallic-text {
+      background: linear-gradient(135deg, #ffffff 0%, #a1a1a1 50%, #ffffff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Scroll Reveal Classes */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal-left.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal-right.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal-scale.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(to right, #FF8A00, #00C6FF);
+      z-index: 1001;
+      width: 0%;
+      transition: width 0.1s ease-out;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -177,8 +250,11 @@
 }
 </script>
 </head>
-  <body>
-    <div id="scroll-progress"></div>
-    <div id="root"></div>
-  </body>
+
+<body>
+  <div id="scroll-progress"></div>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>

@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { 
-  Users, 
-  Clock, 
-  Calendar, 
-  HelpCircle, 
+import {
+  Users,
+  Clock,
+  Calendar,
+  HelpCircle,
   FileText,
   Zap,
   Cpu,
@@ -113,24 +113,6 @@ export const EVENTS: EventData[] = [
     venue: 'Arena Zero',
     coordinators: [{ name: 'Sanjay T', contact: '+91 9876543215' }],
     image: 'https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=2070&auto=format&fit=crop'
-  },
-  {
-    id: 'e-sports',
-    title: 'Valorant Clash',
-    category: 'non-technical',
-    theme: 'ice',
-    description: 'Battle it out in the arena of tactical excellence.',
-    rules: [
-      'Team of 5 + 1 Substitute.',
-      'Standard Tournament Rules.',
-      'Bring your own peripherals (optional).',
-      'Map bans via toss.'
-    ],
-    date: 'Feb 14, 2026',
-    time: '01:00 PM',
-    venue: 'Gaming Arena',
-    coordinators: [{ name: 'Karthik S', contact: '+91 9876543213' }],
-    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop'
   }
 ];
 
