@@ -180,11 +180,16 @@ const App: React.FC = () => {
       <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${isScrolled ? 'bg-brand-bg/90 backdrop-blur-md py-3 md:py-4 border-b border-white/5' : 'bg-transparent py-4 md:py-6'}`}>
         <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-fire to-ice rounded-lg md:rounded-xl flex items-center justify-center font-bold text-white text-lg md:text-xl shadow-lg border border-white/10">X</div>
-            <div className="hidden xs:block">
+            {/* <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-fire to-ice rounded-lg md:rounded-xl flex items-center justify-center font-bold text-white text-lg md:text-xl shadow-lg border border-white/10">X</div> */}
+            <img
+              src="/xploits-header-logo.png"
+              alt="XPLOITS 26"
+              className="h-8 md:h-12 object-contain filter drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]"
+            />
+            {/* <div className="hidden xs:block">
               <span className="font-heading font-bold text-base md:text-xl tracking-tighter uppercase block leading-none">XPLOITS 26</span>
               <span className="text-[7px] md:text-[8px] tracking-[0.4em] font-bold text-gray-500 uppercase">National Symposium</span>
-            </div>
+            </div> */}
           </div>
           <div className="hidden md:flex space-x-10 text-[10px] font-bold tracking-[0.3em] uppercase">
             <a href="#about" className="hover:text-white transition-colors">Odyssey</a>
