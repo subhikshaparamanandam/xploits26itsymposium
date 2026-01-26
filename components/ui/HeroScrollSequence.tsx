@@ -5,9 +5,9 @@ interface HeroScrollSequenceProps {
     baseUrl: string;
     prefix: string;
     extension: string;
-    mobileBaseUrl?: string; // Optional: separate path for mobile assets
-    mobilePrefix?: string;  // Optional: separate prefix for mobile assets
-    mobileCount?: number;   // Optional: different frame count for mobile
+    mobileBaseUrl?: string;
+    mobilePrefix?: string;
+    mobileCount?: number;
     children?: React.ReactNode;
 }
 
@@ -23,16 +23,13 @@ const HeroScrollSequence: React.FC<HeroScrollSequenceProps> = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const overlayRef = useRef<HTMLDivElement>(null);
+    const stickyContainerRef = useRef<HTMLDivElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [loadedCount, setLoadedCount] = useState(0);
     const [error, setError] = useState<string | null>(null);
-    const [isLocked, setIsLocked] = useState(true);
-    const [isInView, setIsInView] = useState(true);
 
-    // Performance Optimization: Use refs for mutable values to avoid re-renders
+    // Performance Optimization: Use refs for mutable values
     const currentFrameRef = useRef(0);
-    const accumulatedDelta = useRef(0);
 
     // Determine active config based on viewport
     const [isMobile, setIsMobile] = useState(false);
@@ -96,7 +93,7 @@ const HeroScrollSequence: React.FC<HeroScrollSequenceProps> = ({
         };
     }, [activeCount, activeBaseUrl, activePrefix, extension]);
 
-    // Draw frame function - Optimized to run outside React render cycle
+    // Draw frame function - Optimized
     const drawFrame = useCallback((index: number) => {
         const canvas = canvasRef.current;
         if (!canvas || !images[index]) return;
@@ -124,182 +121,81 @@ const HeroScrollSequence: React.FC<HeroScrollSequenceProps> = ({
         ctx.drawImage(img, cx, cy, nw, nh);
     }, [images]);
 
-    // Handle resize
-    useEffect(() => {
-        const handleResize = () => {
-            const canvas = canvasRef.current;
-            if (!canvas) return;
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            if (isFullyLoaded) {
-                drawFrame(currentFrameRef.current);
-            }
-        };
-
-        window.addEventListener('resize', handleResize);
-        handleResize();
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, [isFullyLoaded, drawFrame]);
-
-    // Draw initial frame when loaded
+    // Initial draw
     useEffect(() => {
         if (isFullyLoaded) {
             drawFrame(0);
         }
     }, [isFullyLoaded, drawFrame]);
 
-    // Scroll lock logic using wheel event - Optimized
+    // Handle Scroll - Native implementation with sticky positioning
     useEffect(() => {
         if (!isFullyLoaded) return;
 
-        const SCROLL_SENSITIVITY = 22;
-
-        const handleWheel = (e: WheelEvent) => {
-            const container = containerRef.current;
-            if (!container) return;
-
-            const rect = container.getBoundingClientRect();
-            const isHeroInView = rect.top <= 0 && rect.bottom > 0;
-
-            if (!isHeroInView) {
-                setIsInView(false);
-                return;
-            }
-
-            setIsInView(true);
-
-            const scrollingDown = e.deltaY > 0;
-            const scrollingUp = e.deltaY < 0;
-            const atFirstFrame = currentFrameRef.current === 0;
-            const atLastFrame = currentFrameRef.current >= activeCount - 1;
-
-            if ((atLastFrame && scrollingDown) || (atFirstFrame && scrollingUp && rect.top >= 0)) {
-                setIsLocked(false);
-                return;
-            }
-
-            e.preventDefault();
-            setIsLocked(true);
-
-            accumulatedDelta.current += e.deltaY;
-            const framesToMove = Math.floor(accumulatedDelta.current / SCROLL_SENSITIVITY);
-
-            if (framesToMove !== 0) {
-                accumulatedDelta.current = accumulatedDelta.current % SCROLL_SENSITIVITY;
-
-                // Update frame index directly via ref
-                const newFrame = Math.max(0, Math.min(activeCount - 1, currentFrameRef.current + framesToMove));
-
-                if (newFrame !== currentFrameRef.current) {
-                    currentFrameRef.current = newFrame;
-
-                    // Draw directly via requestAnimationFrame
-                    requestAnimationFrame(() => {
-                        drawFrame(newFrame);
-
-                        // Update overlay opacity directly via ref (bypass React render)
-                        if (overlayRef.current) {
-                            // Fade out quickly (10% progress)
-                            const opacity = Math.max(0, 1 - (newFrame / (activeCount * 0.1)));
-                            overlayRef.current.style.opacity = opacity.toString();
-                        }
-                    });
-                }
-            }
-        };
-
         const handleScroll = () => {
             const container = containerRef.current;
+            const stickyRect = stickyContainerRef.current?.getBoundingClientRect();
+
             if (!container) return;
 
-            const rect = container.getBoundingClientRect();
+            // Calculate progress based on container position relative to viewport
+            const containerRect = container.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
 
-            if (rect.bottom > window.innerHeight && rect.top < window.innerHeight) {
-                if (currentFrameRef.current >= activeCount - 1) {
-                    currentFrameRef.current = activeCount - 1;
-                    setIsLocked(true);
-                    setIsInView(true);
-                }
-            }
+            // Total scrollable distance within the container
+            // We want the animation to start when container top hits 0
+            // And end when container bottom hits window bottom (or logical end)
 
-            if (rect.bottom <= 0) {
-                setIsInView(false);
-            }
-        };
+            // Distance the user scrolls while the element is sticky
+            const scrollDistance = containerRect.height - windowHeight;
 
-        // Touch handling state
-        let touchStartY = 0;
+            // How far have we scrolled?
+            // containerRect.top is negative as we scroll down
+            const scrolled = -containerRect.top;
 
-        const handleTouchStart = (e: TouchEvent) => {
-            touchStartY = e.touches[0].clientY;
-        };
+            // Clamp progress between 0 and 1
+            const rawProgress = Math.max(0, Math.min(1, scrolled / scrollDistance));
 
-        const handleTouchMove = (e: TouchEvent) => {
-            const container = containerRef.current;
-            if (!container) return;
+            // Map progress to frame index
+            const frameIndex = Math.min(
+                activeCount - 1,
+                Math.floor(rawProgress * activeCount)
+            );
 
-            const rect = container.getBoundingClientRect();
-            const isHeroInView = rect.top <= 0 && rect.bottom > 0;
+            if (frameIndex !== currentFrameRef.current) {
+                currentFrameRef.current = frameIndex;
+                requestAnimationFrame(() => {
+                    drawFrame(frameIndex);
 
-            if (!isHeroInView) {
-                setIsInView(false);
-                return;
-            }
-
-            setIsInView(true);
-
-            const touchY = e.touches[0].clientY;
-            const deltaY = touchStartY - touchY; // Calculate delta like wheel (drag up = scroll down = positive delta)
-            touchStartY = touchY; // Update for next move event
-
-            const scrollingDown = deltaY > 0;
-            const scrollingUp = deltaY < 0;
-            const atFirstFrame = currentFrameRef.current === 0;
-            const atLastFrame = currentFrameRef.current >= activeCount - 1;
-
-            if ((atLastFrame && scrollingDown) || (atFirstFrame && scrollingUp && rect.top >= 0)) {
-                setIsLocked(false);
-                return;
-            }
-
-            // Lock scroll if inside animation
-            if (e.cancelable) {
-                e.preventDefault();
-            }
-            setIsLocked(true);
-
-            accumulatedDelta.current += deltaY * 3; // Multiplier to match touch sensitivity
-            const framesToMove = Math.floor(accumulatedDelta.current / SCROLL_SENSITIVITY);
-
-            if (framesToMove !== 0) {
-                accumulatedDelta.current = accumulatedDelta.current % SCROLL_SENSITIVITY;
-
-                const newFrame = Math.max(0, Math.min(activeCount - 1, currentFrameRef.current + framesToMove));
-
-                if (newFrame !== currentFrameRef.current) {
-                    currentFrameRef.current = newFrame;
-                    requestAnimationFrame(() => {
-                        drawFrame(newFrame);
-                        if (overlayRef.current) {
-                            const opacity = Math.max(0, 1 - (newFrame / (activeCount * 0.1)));
-                            overlayRef.current.style.opacity = opacity.toString();
-                        }
-                    });
-                }
+                    // Fade out overlay
+                    const overlay = document.getElementById('hero-content-overlay');
+                    if (overlay) {
+                        // Fade out quickly (by 10% progress)
+                        const opacity = Math.max(0, 1 - (frameIndex / (activeCount * 0.1)));
+                        overlay.style.opacity = opacity.toString();
+                        // Hide strictly to avoid clicks when invisible
+                        overlay.style.pointerEvents = opacity <= 0.05 ? 'none' : 'auto';
+                    }
+                });
             }
         };
 
-        window.addEventListener('wheel', handleWheel, { passive: false });
+        const handleResize = () => {
+            const canvas = canvasRef.current;
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                drawFrame(currentFrameRef.current);
+            }
+        };
+
         window.addEventListener('scroll', handleScroll, { passive: true });
-        window.addEventListener('touchstart', handleTouchStart, { passive: false });
-        window.addEventListener('touchmove', handleTouchMove, { passive: false });
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Init size
 
         return () => {
-            window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('touchstart', handleTouchStart);
-            window.removeEventListener('touchmove', handleTouchMove);
+            window.removeEventListener('resize', handleResize);
         };
     }, [isFullyLoaded, activeCount, drawFrame]);
 
@@ -307,49 +203,49 @@ const HeroScrollSequence: React.FC<HeroScrollSequenceProps> = ({
         <div
             ref={containerRef}
             className="relative w-full"
-            style={{ height: '100vh' }}
+            style={{ height: '400vh' }} // Taller container for scroll distance
         >
-            <div className="fixed top-0 left-0 w-full h-screen overflow-hidden" style={{ zIndex: isInView && isFullyLoaded ? 0 : -1, opacity: isInView ? 1 : 0 }}>
+            <div
+                ref={stickyContainerRef}
+                className="sticky top-0 left-0 w-full h-screen overflow-hidden"
+            >
                 <canvas
                     ref={canvasRef}
                     className="w-full h-full object-cover"
                 />
-            </div>
 
-            {/* Loading overlay */}
-            {!isFullyLoaded && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black z-50 transition-opacity duration-1000">
-                    <div className="flex flex-col items-center">
-                        <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden mb-4">
-                            <div
-                                className="h-full bg-gradient-to-r from-fire to-ice transition-all duration-300"
-                                style={{ width: `${(loadedCount / activeCount) * 100}%` }}
-                            />
+                {/* Loading overlay - Absolute on top */}
+                {!isFullyLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black z-50 transition-opacity duration-1000">
+                        <div className="flex flex-col items-center">
+                            <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden mb-4">
+                                <div
+                                    className="h-full bg-gradient-to-r from-fire to-ice transition-all duration-300"
+                                    style={{ width: `${(loadedCount / activeCount) * 100}%` }}
+                                />
+                            </div>
+                            <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/40">
+                                Initializing Hero Sequence {Math.round((loadedCount / activeCount) * 100)}%
+                            </p>
                         </div>
-                        <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/40">
-                            Initializing Hero Sequence {Math.round((loadedCount / activeCount) * 100)}%
-                        </p>
                     </div>
-                </div>
-            )}
+                )}
 
-            {/* Error overlay */}
-            {error && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/80 text-fire text-xs uppercase tracking-widest font-bold z-50">
-                    Protocol Error: {error}
-                </div>
-            )}
+                {/* Error overlay */}
+                {error && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-fire text-xs uppercase tracking-widest font-bold z-50">
+                        Protocol Error: {error}
+                    </div>
+                )}
 
-            {/* Content overlay - Fades out as you scroll */}
-            <div
-                ref={overlayRef}
-                className="relative z-10 h-full transition-opacity duration-300 ease-out"
-                style={{
-                    // Initial opacity
-                    opacity: 1
-                }}
-            >
-                {children}
+                {/* Content Overlay */}
+                <div
+                    id="hero-content-overlay"
+                    className="absolute inset-0 z-10 transition-opacity duration-300 ease-out flex flex-col"
+                    style={{ opacity: 1 }}
+                >
+                    {children}
+                </div>
             </div>
         </div>
     );
