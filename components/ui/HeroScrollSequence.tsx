@@ -23,90 +23,40 @@ const HeroScrollSequence: React.FC<HeroScrollSequenceProps> = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const stickyContainerRef = useRef<HTMLDivElement>(null);
-    const [images, setImages] = useState<HTMLImageElement[]>([]);
+    const imagesRef = useRef<HTMLImageElement[]>([]);
+    const currentFrameRef = useRef(-1);
+
     const [loadedCount, setLoadedCount] = useState(0);
-    const [error, setError] = useState<string | null>(null);
+    const [isFullyLoaded, setIsFullyLoaded] = useState(false);
+    const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+    const [scrollProgress, setScrollProgress] = useState(0);
 
-    // Performance Optimization: Use refs for mutable values
-    const currentFrameRef = useRef(0);
+    // Calculate content opacity based on scroll progress
+    // Visible at start (0-5%), fade out during scroll (5-15%), hidden during animation (15-85%), fade in at end (85-100%)
+    const getContentOpacity = () => {
+        if (scrollProgress < 0.05) return 1; // Fully visible at start
+        if (scrollProgress < 0.15) return 1 - ((scrollProgress - 0.05) / 0.1); // Fade out
+        if (scrollProgress < 0.85) return 0; // Hidden during animation
+        return (scrollProgress - 0.85) / 0.15; // Fade in at end
+    };
 
-    // Determine active config based on viewport
-    const [isMobile, setIsMobile] = useState(false);
+    const contentOpacity = getContentOpacity();
 
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+    const activeCount = isMobile ? (mobileCount || frameCount) : frameCount;
+    const activeBaseUrl = isMobile ? (mobileBaseUrl || baseUrl) : baseUrl;
+    const activePrefix = isMobile ? (mobilePrefix || prefix) : prefix;
 
-    const activeBaseUrl = (isMobile && mobileBaseUrl) ? mobileBaseUrl : baseUrl;
-    const activePrefix = (isMobile && mobilePrefix) ? mobilePrefix : prefix;
-    const activeCount = (isMobile && mobileCount) ? mobileCount : frameCount;
-
-    // Correctly check absolute loaded state against active target
-    const isFullyLoaded = loadedCount === activeCount && images.length === activeCount;
-
-    // Preload images
-    useEffect(() => {
-        let isActive = true;
-        setImages([]);
-        setLoadedCount(0);
-        setError(null);
-
-        const loadedImages: HTMLImageElement[] = [];
-        let count = 0;
-        let hasError = false;
-
-        console.log(`[HeroScrollSequence] Loading ${activeCount} frames from ${activeBaseUrl}/${activePrefix}...`);
-
-        for (let i = 0; i < activeCount; i++) {
-            const img = new Image();
-            const frameIndex = i.toString().padStart(3, '0');
-            const src = `${activeBaseUrl}/${activePrefix}${frameIndex}.${extension}`;
-
-            img.src = src;
-
-            img.onload = () => {
-                if (!isActive) return;
-                count++;
-                setLoadedCount(count);
-                if (count === activeCount && !hasError) {
-                    setImages(loadedImages);
-                    console.log('[HeroScrollSequence] All frames loaded successfully');
-                }
-            };
-
-            img.onerror = (e) => {
-                if (!isActive) return;
-                console.error(`[HeroScrollSequence] Failed to load frame ${i}: ${src}`, e);
-                hasError = true;
-                setError(`Failed to load frame ${i} (${src})`);
-            };
-
-            loadedImages[i] = img;
-        }
-
-        return () => {
-            isActive = false;
-        };
-    }, [activeCount, activeBaseUrl, activePrefix, extension]);
-
-    // Draw frame function - Optimized
     const drawFrame = useCallback((index: number) => {
         const canvas = canvasRef.current;
-        if (!canvas || !images[index]) return;
-
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        const img = images[index];
+        const idx = Math.max(0, Math.min(activeCount - 1, index));
+        const img = imagesRef.current[idx];
 
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!img || !img.complete) return;
 
-        // Maintain aspect ratio (Object-fit: cover equivalent)
         const cw = canvas.width;
         const ch = canvas.height;
         const iw = img.width;
@@ -118,136 +68,177 @@ const HeroScrollSequence: React.FC<HeroScrollSequenceProps> = ({
         const cx = (cw - nw) / 2;
         const cy = (ch - nh) / 2;
 
+        ctx.clearRect(0, 0, cw, ch);
         ctx.drawImage(img, cx, cy, nw, nh);
-    }, [images]);
+    }, [activeCount]);
 
-    // Initial draw
     useEffect(() => {
-        if (isFullyLoaded) {
-            drawFrame(0);
-        }
-    }, [isFullyLoaded, drawFrame]);
-
-    // Handle Scroll - Native implementation with sticky positioning
-    useEffect(() => {
-        if (!isFullyLoaded) return;
-
-        const handleScroll = () => {
-            const container = containerRef.current;
-            const stickyRect = stickyContainerRef.current?.getBoundingClientRect();
-
-            if (!container) return;
-
-            // Calculate progress based on container position relative to viewport
-            const containerRect = container.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-
-            // Total scrollable distance within the container
-            // We want the animation to start when container top hits 0
-            // And end when container bottom hits window bottom (or logical end)
-
-            // Distance the user scrolls while the element is sticky
-            const scrollDistance = containerRect.height - windowHeight;
-
-            // How far have we scrolled?
-            // containerRect.top is negative as we scroll down
-            const scrolled = -containerRect.top;
-
-            // Clamp progress between 0 and 1
-            const rawProgress = Math.max(0, Math.min(1, scrolled / scrollDistance));
-
-            // Map progress to frame index
-            const frameIndex = Math.min(
-                activeCount - 1,
-                Math.floor(rawProgress * activeCount)
-            );
-
-            if (frameIndex !== currentFrameRef.current) {
-                currentFrameRef.current = frameIndex;
-                requestAnimationFrame(() => {
-                    drawFrame(frameIndex);
-
-                    // Fade out overlay
-                    const overlay = document.getElementById('hero-content-overlay');
-                    if (overlay) {
-                        // Fade out quickly (by 10% progress)
-                        const opacity = Math.max(0, 1 - (frameIndex / (activeCount * 0.1)));
-                        overlay.style.opacity = opacity.toString();
-                        // Hide strictly to avoid clicks when invisible
-                        overlay.style.pointerEvents = opacity <= 0.05 ? 'none' : 'auto';
-                    }
-                });
-            }
-        };
-
         const handleResize = () => {
+            const mobile = window.innerWidth < 768;
+            if (mobile !== isMobile) setIsMobile(mobile);
+
             const canvas = canvasRef.current;
             if (canvas) {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
-                drawFrame(currentFrameRef.current);
+                drawFrame(currentFrameRef.current === -1 ? 0 : currentFrameRef.current);
             }
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('resize', handleResize);
-        handleResize(); // Init size
+        handleResize();
+        return () => window.removeEventListener('resize', handleResize);
+    }, [isMobile, drawFrame]);
 
+    useEffect(() => {
+        let isActive = true;
+        imagesRef.current = [];
+        setLoadedCount(0);
+        setIsFullyLoaded(false);
+
+        const total = activeCount;
+        let count = 0;
+
+        for (let i = 0; i < total; i++) {
+            const img = new Image();
+            const frameStr = i.toString().padStart(3, '0');
+            img.src = `${activeBaseUrl}/${activePrefix}${frameStr}.${extension}`;
+
+            img.onload = () => {
+                if (!isActive) return;
+                imagesRef.current[i] = img;
+                count++;
+                setLoadedCount(count);
+                if (i === 0 && currentFrameRef.current === -1) {
+                    currentFrameRef.current = 0;
+                    requestAnimationFrame(() => drawFrame(0));
+                }
+                if (count === total) setIsFullyLoaded(true);
+            };
+
+            img.onerror = () => {
+                if (!isActive) return;
+                count++;
+                setLoadedCount(count);
+                if (count === total) setIsFullyLoaded(true);
+            };
+        }
+
+        return () => { isActive = false; };
+    }, [activeCount, activeBaseUrl, activePrefix, extension, drawFrame]);
+
+    useEffect(() => {
+        let rafId: number | null = null;
+        let lastScrollTime = 0;
+        const targetFPS = 60; // Target 60 FPS for smooth animation
+        const frameInterval = 1000 / targetFPS;
+
+        const handleScroll = () => {
+            const now = performance.now();
+
+            // Throttle to target FPS for consistent smooth playback
+            if (now - lastScrollTime < frameInterval) {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => handleScroll());
+                return;
+            }
+            lastScrollTime = now;
+
+            const container = containerRef.current;
+            if (!container) return;
+
+            const rect = container.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            const scrollDistance = rect.height - windowHeight;
+            const scrollOffset = -rect.top;
+
+            const progress = Math.max(0, Math.min(1, scrollOffset / scrollDistance));
+            const frameIndex = Math.min(activeCount - 1, Math.floor(progress * activeCount));
+
+            // Update scroll progress for content opacity
+            setScrollProgress(progress);
+
+            // Always update frame for smoother motion
+            currentFrameRef.current = frameIndex;
+            drawFrame(frameIndex);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleResize);
+            if (rafId) cancelAnimationFrame(rafId);
         };
-    }, [isFullyLoaded, activeCount, drawFrame]);
+    }, [activeCount, drawFrame]);
+
+    // Force scroll lock during initial load
+    useEffect(() => {
+        if (!isFullyLoaded) {
+            document.body.style.overflow = 'hidden';
+            window.scrollTo(0, 0);
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isFullyLoaded]);
 
     return (
-        <div
+        <section
             ref={containerRef}
-            className="relative w-full"
-            style={{ height: '400vh' }} // Taller container for scroll distance
+            className="relative w-full overflow-visible"
+            style={{ height: '300vh', backgroundColor: '#000' }}
         >
             <div
-                ref={stickyContainerRef}
-                className="sticky top-0 left-0 w-full h-screen overflow-hidden"
+                style={{
+                    position: 'sticky',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100vh',
+                    zIndex: 0,
+                    overflow: 'hidden',
+                    backgroundColor: '#000'
+                }}
             >
                 <canvas
                     ref={canvasRef}
-                    className="w-full h-full object-cover"
+                    style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
                 />
 
-                {/* Loading overlay - Absolute on top */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        inset: 0,
+                        zIndex: 10,
+                        pointerEvents: 'none',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        opacity: contentOpacity,
+                        transition: 'opacity 0.3s ease-out'
+                    }}
+                >
+                    <div style={{ pointerEvents: contentOpacity > 0.5 ? 'auto' : 'none', flex: 1 }}>
+                        {children}
+                    </div>
+                </div>
+
                 {!isFullyLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black z-50 transition-opacity duration-1000">
-                        <div className="flex flex-col items-center">
-                            <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden mb-4">
+                    <div className="absolute inset-0 z-[100] bg-black flex flex-col items-center justify-center">
+                        <div className="text-center px-10">
+                            <div className="w-64 h-1 bg-white/10 rounded-full mb-6 overflow-hidden">
                                 <div
-                                    className="h-full bg-gradient-to-r from-fire to-ice transition-all duration-300"
+                                    className="h-full bg-ice shadow-[0_0_15px_rgba(0,198,255,1)] transition-all duration-300"
                                     style={{ width: `${(loadedCount / activeCount) * 100}%` }}
                                 />
                             </div>
-                            <p className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/40">
-                                Initializing Hero Sequence {Math.round((loadedCount / activeCount) * 100)}%
+                            <p className="text-[10px] text-ice uppercase tracking-[0.5em] font-bold animate-pulse">
+                                Syncing Odyssey {Math.round((loadedCount / activeCount) * 100)}%
                             </p>
                         </div>
                     </div>
                 )}
-
-                {/* Error overlay */}
-                {error && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-fire text-xs uppercase tracking-widest font-bold z-50">
-                        Protocol Error: {error}
-                    </div>
-                )}
-
-                {/* Content Overlay */}
-                <div
-                    id="hero-content-overlay"
-                    className="absolute inset-0 z-10 transition-opacity duration-300 ease-out flex flex-col"
-                    style={{ opacity: 1 }}
-                >
-                    {children}
-                </div>
             </div>
-        </div>
+        </section>
     );
 };
 

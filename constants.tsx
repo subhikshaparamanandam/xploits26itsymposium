@@ -118,30 +118,30 @@ export const EVENTS: EventData[] = [
 
 export const STAFF_COORDINATORS: Coordinator[] = [
   {
-    name: 'Dr. Narayanan',
-    designation: 'HOD',
+    name: 'Dr. S. Narayanan',
+    designation: 'Professor & Head of Department',
     department: 'Dept. of Information Technology',
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop'
+    image: 'https://via.placeholder.com/400x400?text=HOD'
   },
   {
-    name: 'Mrs. Sandhiya M',
-    designation: 'Assistant Professor',
-    department: 'Dept. of Information Technology',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'
+    name: 'Dr. S. Sandhya',
+    designation: 'Assistant Professor (Sr.G)',
+    department: 'Staff Coordinator 1',
+    image: '/Staff and Office Bearres/Staff/Staff Coordinator 1.jpg'
   },
   {
-    name: 'Mrs. Kiruthiga S',
-    designation: 'Assistant Professor',
-    department: 'Dept. of Information Technology',
-    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop'
+    name: 'Ms. S. Kiruthika',
+    designation: 'Assistant Professor (O.G)',
+    department: 'Staff Coordinator 2',
+    image: '/Staff and Office Bearres/Staff/Staff Coordinator 2.jpg'
   }
 ];
 
 export const STUDENT_COORDINATORS = [
-  { role: 'President', name: 'Vignesh J', phone: '9000000001', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop' },
-  { role: 'Vice President', name: 'Ananya S', phone: '9000000002', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop' },
-  { role: 'Secretary', name: 'Dinesh K', phone: '9000000003', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop' },
-  { role: 'Joint Secretary', name: 'Pavithra R', phone: '9000000004', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop' },
-  { role: 'Treasurer (IT-1)', name: 'Sanjay M', phone: '9000000005', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop' },
-  { role: 'Treasurer (IT-2)', name: 'Divya P', phone: '9000000006', image: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=1972&auto=format&fit=crop' },
+  { role: 'President', name: 'Dharaneesh R D', phone: '9000000001', image: '/Staff and Office Bearres/Office B/President.jpg' },
+  { role: 'Vice President', name: 'Aswin M', phone: '9000000002', image: '/Staff and Office Bearres/Office B/Vice President.jpg' },
+  { role: 'Secretary', name: 'Shamitha R', phone: '9000000003', image: '/Staff and Office Bearres/Office B/Secretary.jpg' },
+  { role: 'Joint Secretary', name: 'Preya Darsan A', phone: '9000000004', image: '/Staff and Office Bearres/Office B/Joint Secretary.jpg' },
+  { role: 'Treasurer 1', name: 'Gayathri M', phone: '9000000005', image: '/Staff and Office Bearres/Office B/Treasurer 1.jpg' },
+  { role: 'Treasurer 2', name: 'Pugal B', phone: '9000000006', image: '/Staff and Office Bearres/Office B/Treasurer 2.jpg' },
 ];

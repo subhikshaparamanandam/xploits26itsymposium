@@ -121,6 +121,7 @@ const StudentCoordCard: React.FC<{ student: typeof STUDENT_COORDINATORS[0] }> = 
 const App: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isInHeroSection, setIsInHeroSection] = useState(false);
   const [isHeroRegistering, setIsHeroRegistering] = useState(false);
   const [isGlitching, setIsGlitching] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('All');
@@ -137,7 +138,11 @@ const App: React.FC = () => {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const heroScrollHeight = window.innerHeight * 2.5; // 300vh hero section
+
       setIsScrolled(currentScrollY > 50);
+      // Hide header during hero animation scroll (between 50px and end of hero section)
+      setIsInHeroSection(currentScrollY > 50 && currentScrollY < heroScrollHeight);
 
       if (scrollProgress) {
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -175,9 +180,9 @@ const App: React.FC = () => {
     : EVENTS.filter(event => event.category === activeCategory);
 
   return (
-    <div className="min-h-screen selection:bg-fire selection:text-white bg-[#050505] overflow-x-hidden">
+    <div className="min-h-screen selection:bg-fire selection:text-white bg-[#050505]">
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${isScrolled ? 'bg-brand-bg/90 backdrop-blur-md py-3 md:py-4 border-b border-white/5' : 'bg-transparent py-4 md:py-6'}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${isInHeroSection ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'} ${isScrolled && !isInHeroSection ? 'bg-brand-bg/90 backdrop-blur-md py-3 md:py-4 border-b border-white/5' : 'bg-transparent py-4 md:py-6'}`}>
         <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
           <div className="flex items-center space-x-3">
             {/* <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-fire to-ice rounded-lg md:rounded-xl flex items-center justify-center font-bold text-white text-lg md:text-xl shadow-lg border border-white/10">X</div> */}
@@ -213,7 +218,7 @@ const App: React.FC = () => {
         mobilePrefix="lv_0_20260125190320_"
         mobileCount={64}
       >
-        <div className="relative h-full flex flex-col justify-between text-center px-4 md:px-6 overflow-hidden">
+        <div className="relative h-full flex flex-col justify-between text-center px-4 md:px-6">
           {/* Subtle gradient overlays - optimized for visibility */}
           <div className="absolute inset-0 bg-gradient-to-b from-brand-bg/80 via-transparent to-brand-bg/90 pointer-events-none"></div>
           <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-brand-bg to-transparent pointer-events-none"></div>
@@ -425,41 +430,20 @@ const App: React.FC = () => {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 md:mb-20 gap-8 reveal">
             <div className="space-y-3 md:space-y-4">
-              <div className="text-[9px] md:text-[10px] font-bold tracking-[0.3em] md:tracking-[0.5em] text-ice uppercase text-center lg:text-left">Operational Domains</div>
+              <div className="text-[9px] md:text-[10px] font-bold tracking-[0.3em] md:tracking-[0.5em] text-ice uppercase text-center lg:text-left">Technical Events</div>
               <h2 className="text-4xl md:text-6xl font-heading font-bold tracking-tighter text-center lg:text-left">Arena <span className="text-ice italic">Selection</span></h2>
-            </div>
-            <div className="flex items-center justify-center space-x-2 md:space-x-3 bg-white/5 p-1.5 rounded-xl md:rounded-2xl border border-white/5 overflow-x-auto no-scrollbar">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-6 md:px-8 py-2 md:py-2.5 rounded-lg md:rounded-xl transition-all text-[9px] md:text-[10px] font-bold uppercase tracking-widest whitespace-nowrap ${activeCategory === cat
-                    ? 'bg-ice text-white shadow-lg shadow-ice/20'
-                    : 'hover:bg-white/5 text-gray-400'
-                    }`}
-                >
-                  {cat === 'technical' ? 'Technical' : cat === 'non-technical' ? 'Non-Technical' : cat}
-                </button>
-              ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 min-h-[400px]">
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((event, idx) => (
-                <div key={event.id} className="reveal-scale animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ transitionDelay: `${idx * 150}ms` }}>
-                  <EventCard
-                    event={event}
-                    onClick={setSelectedEvent}
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="col-span-full flex flex-col items-center justify-center py-20 text-gray-500 space-y-4">
-                <HelpCircle className="w-12 h-12 opacity-20" />
-                <p className="font-bold tracking-[0.2em] uppercase text-xs">No matching arenas found</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+            {EVENTS.map((event, idx) => (
+              <div key={event.id} className="reveal-scale animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ transitionDelay: `${idx * 150}ms` }}>
+                <EventCard
+                  event={event}
+                  onClick={setSelectedEvent}
+                />
               </div>
-            )}
+            ))}
           </div>
         </div>
       </section>
