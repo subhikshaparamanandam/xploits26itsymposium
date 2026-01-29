@@ -186,7 +186,7 @@ const HeroScrollSequence: React.FC<HeroScrollSequenceProps> = ({
         <section
             ref={containerRef}
             className="relative w-full overflow-visible"
-            style={{ height: '300vh', backgroundColor: '#000' }}
+            style={{ height: '200vh', backgroundColor: '#000' }}
         >
             <div
                 style={{

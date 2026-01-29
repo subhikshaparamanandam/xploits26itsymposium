@@ -115,7 +115,7 @@ const App: React.FC = () => {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const heroScrollHeight = window.innerHeight * 2.5; // 300vh hero section
+      const heroScrollHeight = window.innerHeight * 1.5; // 200vh hero section
 
       setIsScrolled(currentScrollY > 50);
       // Hide header during hero animation scroll (between 50px and end of hero section)
@@ -230,16 +230,22 @@ const App: React.FC = () => {
           <div className="relative z-20 pb-4 md:pb-8 space-y-3 md:space-y-4">
             {/* Event Title Badge */}
             <div className="flex flex-col items-center">
-              <div className="inline-flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-2.5 backdrop-blur-xl bg-black/50 rounded-full border border-white/10 shadow-lg">
-                <div className="w-1.5 h-1.5 rounded-full bg-fire animate-pulse"></div>
-                <p className="text-[9px] sm:text-[10px] md:text-xs text-white tracking-[0.15em] uppercase font-bold">
-                  National Level Technical Symposium
-                </p>
-                <span className="text-white/30">•</span>
-                <p className="text-[9px] sm:text-[10px] md:text-xs text-ice tracking-[0.1em] font-black">
-                  14.02.2026
-                </p>
-                <div className="w-1.5 h-1.5 rounded-full bg-ice animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              <div className="inline-flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-2.5 backdrop-blur-xl bg-black/50 rounded-2xl sm:rounded-full border border-white/10 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-fire animate-pulse"></div>
+                  <p className="text-[10px] sm:text-[10px] md:text-xs text-white tracking-[0.12em] sm:tracking-[0.15em] uppercase font-bold text-center">
+                    National Level Technical Symposium
+                  </p>
+                  <div className="hidden sm:block w-1.5 h-1.5 rounded-full bg-fire animate-pulse"></div>
+                </div>
+                <div className="hidden sm:block text-white/30">•</div>
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-ice animate-pulse sm:hidden" style={{ animationDelay: '0.5s' }}></div>
+                  <p className="text-[11px] sm:text-[10px] md:text-xs text-ice tracking-[0.1em] font-black">
+                    14.02.2026
+                  </p>
+                  <div className="w-1.5 h-1.5 rounded-full bg-ice animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                </div>
               </div>
             </div>
 
@@ -569,8 +575,6 @@ const App: React.FC = () => {
           <div className="pt-8 md:pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[8px] md:text-[10px] font-bold tracking-[0.2em] md:tracking-[0.3em] text-gray-600 uppercase text-center md:text-left gap-4">
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6">
               <p>&copy; 2026 XPLOITS. Authorized Personnel Only.</p>
-              <div className="hidden md:block w-10 h-[1px] bg-white/10"></div>
-              <div className="text-fire">Fire & Ice Edition</div>
             </div>
             <div className="flex space-x-6 md:space-x-10">
               <a href="#" className="hover:text-white transition-colors">Security</a>
