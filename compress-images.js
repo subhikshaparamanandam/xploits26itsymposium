@@ -6,48 +6,92 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const imagesToCompress = [
-    'Staff and Office Bearres/Office B/Secretary.jpg',
-    'Staff and Office Bearres/Office B/Treasurer 2.jpg',
-    'Staff and Office Bearres/Office B/Joint Secretary.jpg',
-    'Staff and Office Bearres/Office B/Vice President.jpg',
-    'Staff and Office Bearres/Staff/Staff Coordinator 1.jpg',
-    'Staff and Office Bearres/Staff/Staff Coordinator 2.jpg'
+// Target folders relative to project root
+const targetFolders = [
+    'public/hero-animation',
+    'public/hero-animation-mobile',
+    'public/gallery',
+    'public/events'
 ];
 
-async function compressImages() {
-    for (const imagePath of imagesToCompress) {
-        const fullPath = path.join(__dirname, imagePath);
+async function compressDirectory(dirPath) {
+    if (!fs.existsSync(dirPath)) {
+        console.log(`Directory not found: ${dirPath}`);
+        return;
+    }
 
-        if (!fs.existsSync(fullPath)) {
-            console.log(`Skipping (not found): ${imagePath}`);
+    const files = fs.readdirSync(dirPath);
+
+    for (const file of files) {
+        const fullPath = path.join(dirPath, file);
+        const stats = fs.statSync(fullPath);
+
+        if (stats.isDirectory()) {
+            await compressDirectory(fullPath);
             continue;
         }
 
-        const stats = fs.statSync(fullPath);
-        const sizeMB = stats.size / (1024 * 1024);
-        console.log(`Processing: ${imagePath} (${sizeMB.toFixed(2)} MB)`);
+        if (!file.match(/\.(jpg|jpeg|png|webp)$/i)) continue;
 
-        const tempPath = fullPath + '.temp.jpg';
+        // Skip already small files (e.g. under 100KB) unless it's hero animation which we want SMALL
+        // Hero frames need to be very optimized for smooth loading
+        const isHero = dirPath.includes('hero-animation');
+
+        // Settings
+        const quality = isHero ? 60 : 75; // More aggressive on hero frames
+        const width = isHero ? 1280 : 1600; // Limit max width
+
+        const tempPath = fullPath + '.temp' + path.extname(file);
 
         try {
-            await sharp(fullPath)
-                .resize(800, 800, { fit: 'cover', withoutEnlargement: true })
-                .jpeg({ quality: 80 })
-                .toFile(tempPath);
+            const sizeKB = stats.size / 1024;
 
-            fs.unlinkSync(fullPath);
-            fs.renameSync(tempPath, fullPath);
+            // Skip extremely small files to avoid re-compression artifacts
+            if (sizeKB < 50 && !isHero) continue;
 
-            const newStats = fs.statSync(fullPath);
-            const newSizeMB = newStats.size / (1024 * 1024);
-            console.log(`  Compressed: ${sizeMB.toFixed(2)} MB -> ${newSizeMB.toFixed(2)} MB`);
+            let pipeline = sharp(fullPath);
+
+            // Resize if needed
+            pipeline = pipeline.resize(width, null, {
+                fit: 'inside',
+                withoutEnlargement: true
+            });
+
+            if (file.endsWith('.png')) {
+                pipeline = pipeline.png({ quality: quality });
+            } else {
+                pipeline = pipeline.jpeg({ quality: quality, mozjpeg: true });
+            }
+
+            await pipeline.toFile(tempPath);
+
+            const newStats = fs.statSync(tempPath);
+
+            // Only replace if we actually saved space
+            if (newStats.size < stats.size) {
+                fs.unlinkSync(fullPath);
+                fs.renameSync(tempPath, fullPath);
+                console.log(`Compressed ${file}: ${(sizeKB).toFixed(1)}KB -> ${(newStats.size / 1024).toFixed(1)}KB`);
+            } else {
+                fs.unlinkSync(tempPath);
+                // console.log(`Skipped ${file} (no saving)`);
+            }
+
         } catch (err) {
-            console.error(`  Error compressing ${imagePath}:`, err.message);
+            console.error(`Error processing ${file}:`, err.message);
             if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
         }
     }
-    console.log('Done!');
 }
 
-compressImages();
+async function main() {
+    console.log('Starting compression...');
+    for (const folder of targetFolders) {
+        const fullPath = path.join(__dirname, folder);
+        console.log(`Scanning: ${folder}`);
+        await compressDirectory(fullPath);
+    }
+    console.log('Compression complete!');
+}
+
+main();
