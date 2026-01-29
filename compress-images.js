@@ -8,10 +8,7 @@ const __dirname = path.dirname(__filename);
 
 // Target folders relative to project root
 const targetFolders = [
-    'public/hero-animation',
-    'public/hero-animation-mobile',
-    'public/gallery',
-    'public/events'
+    'public', // Scan entire public folder
 ];
 
 async function compressDirectory(dirPath) {
