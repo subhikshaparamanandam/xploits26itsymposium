@@ -227,6 +227,42 @@
       transform: scale(1);
     }
 
+    /* Mobile scroll-based color reveal - becomes colorful when in view on mobile */
+    @media (max-width: 767px) {
+      .mobile-color-reveal.in-view .grayscale-mobile {
+        filter: grayscale(0) !important;
+      }
+
+      .mobile-color-reveal.in-view .ring-mobile {
+        --tw-ring-color: var(--ring-active-color) !important;
+      }
+
+      .mobile-color-reveal.in-view .scale-mobile {
+        transform: scale(1.05);
+      }
+
+      .mobile-color-reveal.in-view .overlay-mobile {
+        opacity: 1 !important;
+      }
+
+      .mobile-color-reveal.in-view .text-color-mobile {
+        color: var(--text-active-color) !important;
+      }
+
+      .mobile-color-reveal.in-view .glow-mobile {
+        opacity: 0.4 !important;
+        transform: scale(1.25);
+      }
+
+      .mobile-color-reveal.in-view .dot-mobile {
+        background-color: var(--text-active-color) !important;
+      }
+
+      .mobile-color-reveal.in-view .bar-mobile {
+        width: 100% !important;
+      }
+    }
+
     #scroll-progress {
       position: fixed;
       top: 0;

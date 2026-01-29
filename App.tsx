@@ -56,30 +56,48 @@ const useRevealOnScroll = () => {
     const elements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
     elements.forEach(el => observer.observe(el));
 
+    // Mobile color reveal observer - adds/removes 'in-view' class for scroll-based color
+    const mobileColorObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        } else {
+          entry.target.classList.remove('in-view');
+        }
+      });
+    }, { threshold: 0.3, rootMargin: "0px 0px -100px 0px" });
+
+    const colorRevealElements = document.querySelectorAll('.mobile-color-reveal');
+    colorRevealElements.forEach(el => mobileColorObserver.observe(el));
+
     return () => {
       elements.forEach(el => observer.unobserve(el));
+      colorRevealElements.forEach(el => mobileColorObserver.unobserve(el));
     };
   }, []);
 };
 
 const StudentCoordCard: React.FC<{ student: typeof STUDENT_COORDINATORS[0] }> = ({ student }) => {
   return (
-    <div className="reveal glass rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 text-center group transition-all hover:border-ice/30 hover:-translate-y-2 duration-500 relative overflow-hidden flex flex-col h-full min-h-[380px] md:min-h-[420px]">
+    <div
+      className="reveal mobile-color-reveal glass rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 text-center group transition-all hover:border-ice/30 hover:-translate-y-2 duration-500 relative overflow-hidden flex flex-col h-full min-h-[380px] md:min-h-[420px]"
+      style={{ '--ring-active-color': 'rgba(0, 198, 255, 0.2)', '--text-active-color': '#00C6FF' } as React.CSSProperties}
+    >
       {/* Background Decorative Layer */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-ice/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
       <div className="relative z-10 flex flex-col h-full">
-        <div className="w-32 h-44 md:w-40 md:h-52 mx-auto mb-6 md:mb-8 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 ring-4 ring-white/5 group-hover:ring-ice/20 relative shrink-0">
+        <div className="w-32 h-44 md:w-40 md:h-52 mx-auto mb-6 md:mb-8 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden grayscale grayscale-mobile group-hover:grayscale-0 transition-all duration-700 ring-4 ring-white/5 ring-mobile group-hover:ring-ice/20 relative shrink-0">
           <img
             src={student.image}
             alt={student.name}
-            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+            className="w-full h-full object-cover transform scale-mobile group-hover:scale-110 transition-transform duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ice/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-ice/20 to-transparent opacity-0 overlay-mobile group-hover:opacity-100 transition-opacity"></div>
         </div>
 
         <div className="space-y-1 md:space-y-2 mb-4 md:mb-6">
-          <h3 className="text-xl md:text-2xl font-heading font-bold group-hover:text-ice transition-colors tracking-tight">{student.name}</h3>
+          <h3 className="text-xl md:text-2xl font-heading font-bold text-color-mobile group-hover:text-ice transition-colors tracking-tight">{student.name}</h3>
           <p className="text-ice-light text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em]">{student.role}</p>
         </div>
 
@@ -443,12 +461,16 @@ const App: React.FC = () => {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {STAFF_COORDINATORS.map((staff, idx) => (
-              <div key={idx} className="reveal glass rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 text-center group transition-all hover:border-fire/30 hover:-translate-y-2 duration-500" style={{ transitionDelay: `${idx * 200}ms` }}>
-                <div className="w-32 h-44 md:w-40 md:h-52 mx-auto mb-6 md:mb-8 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 ring-4 ring-white/5 group-hover:ring-fire/20 relative">
-                  <img src={staff.image} alt={staff.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-fire/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div
+                key={idx}
+                className="reveal mobile-color-reveal glass rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 text-center group transition-all hover:border-fire/30 hover:-translate-y-2 duration-500"
+                style={{ transitionDelay: `${idx * 200}ms`, '--ring-active-color': 'rgba(255, 138, 0, 0.2)', '--text-active-color': '#FF8A00' } as React.CSSProperties}
+              >
+                <div className="w-32 h-44 md:w-40 md:h-52 mx-auto mb-6 md:mb-8 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden grayscale grayscale-mobile group-hover:grayscale-0 transition-all duration-700 ring-4 ring-white/5 ring-mobile group-hover:ring-fire/20 relative">
+                  <img src={staff.image} alt={staff.name} className="w-full h-full object-cover transform scale-mobile group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-fire/20 to-transparent opacity-0 overlay-mobile group-hover:opacity-100 transition-opacity"></div>
                 </div>
-                <h3 className="text-xl md:text-2xl font-heading font-bold mb-2 group-hover:text-fire transition-colors">{staff.name}</h3>
+                <h3 className="text-xl md:text-2xl font-heading font-bold mb-2 text-color-mobile group-hover:text-fire transition-colors">{staff.name}</h3>
                 <p className="text-fire-light text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] mb-4 md:mb-6">{staff.designation}</p>
                 <div className="w-12 md:w-16 h-[1px] bg-white/10 mx-auto mb-4 md:mb-6"></div>
                 <p className="text-gray-500 text-[9px] md:text-[10px] leading-relaxed uppercase tracking-[0.2em] font-bold">{staff.department}</p>
