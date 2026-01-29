@@ -39,80 +39,99 @@ export const EVENTS: EventData[] = [
     date: 'Feb 14, 2026',
     time: '10:00 AM',
     venue: 'Seminar Hall A',
-    coordinators: [{ name: 'Arun Kumar', contact: '+91 9876543210' }],
-    image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070&auto=format&fit=crop'
+    coordinators: [
+      { name: 'VANAJA', contact: '+91 93448 39219' },
+      { name: 'PAVITHRA', contact: '+91 79043 10660' }
+    ],
+    image: '/events/paper-presentation.png'
   },
   {
-    id: 'coding-battle',
-    title: 'Code Genesis',
+    id: 'mindblitz',
+    title: 'MINDBLITZ',
     category: 'technical',
     theme: 'ice',
-    description: 'A high-speed competitive programming event where logic meets speed.',
+    description: 'A technical quiz event with three rounds: Tech Picto-Guess, Flowchart Fixer, and Rapid Tech Fire.',
     rules: [
-      'Individual participation.',
-      'Languages: C++, Java, Python.',
-      '3 Rounds: MCQ, Debugging, Problem Solving.',
-      'Internet usage is strictly prohibited.'
+      'Each team must consist of 2–3 participants.',
+      'Elimination applies after each round based on scores.',
+      'Discussion is allowed only within the team.',
+      'Use of mobile phones or any external help is strictly prohibited.',
+      'Laptop is mandatory. Use your own internet connection.'
     ],
     date: 'Feb 14, 2026',
-    time: '11:30 AM',
-    venue: 'Computing Lab 2',
-    coordinators: [{ name: 'Sreya V', contact: '+91 9876543211' }],
-    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop'
+    time: '09:00 AM',
+    venue: 'Main Hall',
+    coordinators: [
+      { name: 'MADHU SRI', contact: '+91 94446 26989' },
+      { name: 'MADHUMITHA', contact: '+91 93446 05870' }
+    ],
+    image: '/events/mindblitz.png'
   },
   {
-    id: 'ui-ux-design',
-    title: 'Pixel Perfect',
+    id: 'grand-theft-auction',
+    title: 'Grand Theft Auction: Data City',
     category: 'technical',
     theme: 'fire',
-    description: 'Design a premium interface based on the spot theme provided.',
+    description: 'A data-driven simulation event integrating sports analytics and strategic decision-making through an IPL auction.',
     rules: [
-      'Figma or Adobe XD only.',
-      'Theme will be revealed at the start.',
-      'Focus on usability and aesthetic flow.',
-      'Duration: 2 hours.'
-    ],
-    date: 'Feb 14, 2026',
-    time: '09:30 AM',
-    venue: 'Design Studio',
-    coordinators: [{ name: 'Rahul R', contact: '+91 9876543212' }],
-    image: 'https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?q=80&w=2070&auto=format&fit=crop'
-  },
-  {
-    id: 'cyber-sentry',
-    title: 'Cyber Sentry',
-    category: 'technical',
-    theme: 'ice',
-    description: 'Defend your perimeter. A high-stakes capture the flag event focusing on network security and cryptography.',
-    rules: [
-      'Team of 2 members.',
-      'Bring your own laptop with required tools.',
-      'Exploitation of game servers only.',
-      'Points based on flags captured and time.'
-    ],
-    date: 'Feb 14, 2026',
-    time: '02:00 PM',
-    venue: 'Cyber Security Hub',
-    coordinators: [{ name: 'Manoj P', contact: '+91 9876543214' }],
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop'
-  },
-  {
-    id: 'robo-rumble',
-    title: 'Robo Rumble',
-    category: 'technical',
-    theme: 'fire',
-    description: 'Engineering meets adrenaline. Witness custom-built bots battle for supremacy in the arena.',
-    rules: [
-      'Bot weight must not exceed 15kg.',
-      'Dimensions within 30x30x30 cm.',
-      'Wired or wireless control allowed.',
-      'Safety goggles are mandatory.'
+      'Round 1: Technical quiz on IPL stats and data fundamentals.',
+      'Round 2: Live bidding to acquire players with a ₹100 Crores budget.',
+      'Teams must construct a balanced squad (Batsmen, Bowlers, etc.).',
+      'Evaluation based on selection strategy (70%) and dashboard design (30%).',
+      'Recommended tools: Power BI, Tableau, or standard viz platforms.'
     ],
     date: 'Feb 14, 2026',
     time: '11:00 AM',
-    venue: 'Arena Zero',
-    coordinators: [{ name: 'Sanjay T', contact: '+91 9876543215' }],
-    image: 'https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=2070&auto=format&fit=crop'
+    venue: 'Analytics Lab',
+    coordinators: [
+      { name: 'TARUN PRABAKARAN', contact: '+91 99622 60295' },
+      { name: 'MUKESH RAAJ', contact: '+91 99625 73702' }
+    ],
+    image: '/events/grand-theft-auction.png'
+  },
+  {
+    id: 'trading-emperor',
+    title: 'TRADING EMPEROR',
+    category: 'technical',
+    theme: 'ice',
+    description: 'Technical quiz combined with a business-style board game focused on buying and trading programming languages.',
+    rules: [
+      'Round 1: Build a block tower by answering tech questions (Bottle Flip to answer).',
+      'Round 2: Strategic property-style game trading programming languages.',
+      'Team Structure: Each team consists of two participants.',
+      'Shortlisting based on number of blocks, accuracy, and tower stability.',
+      'Final decision based on property ownership and overall performance.'
+    ],
+    date: 'Feb 14, 2026',
+    time: '01:30 PM',
+    venue: 'Business Lounge',
+    coordinators: [
+      { name: 'ROJA', contact: '+91 9150543023' },
+      { name: 'VEERA AAKASH', contact: '+91 93428 26426' }
+    ],
+    image: '/events/trading-emperor.png'
+  },
+  {
+    id: 'heistverse',
+    title: 'HeistVerse - The Final Protocol',
+    category: 'technical',
+    theme: 'fire',
+    description: 'A story-driven digital heist investigation with six sequential investigative rounds testing logic and analysis.',
+    rules: [
+      '6 Rounds: QR Decoding, Simon Logic, Reverse Coding, File Manager, Encrypted Analysis, Frequency Matching.',
+      'Team size: 2–3 students. One laptop mandatory.',
+      'Offline, on-campus lab and classroom setup.',
+      'Once submitted, code/lines cannot be edited (Round 3).',
+      'Only one member per team allowed for specific search phases.'
+    ],
+    date: 'Feb 14, 2026',
+    time: '02:00 PM',
+    venue: 'Cyber Security Lab',
+    coordinators: [
+      { name: 'SANJAIKUMAR', contact: '+91 90477 34581' },
+      { name: 'TANU', contact: '+91 73052 65129' }
+    ],
+    image: '/events/heistverse.png'
   }
 ];
 
@@ -121,18 +140,18 @@ export const STAFF_COORDINATORS: Coordinator[] = [
     name: 'Dr. S. Narayanan',
     designation: 'Professor & Head of Department',
     department: 'Dept. of Information Technology',
-    image: 'https://via.placeholder.com/400x400?text=HOD'
+    image: '/Staff and Office Bearres/Staff/Head of Department.jpg'
   },
   {
     name: 'Dr. S. Sandhya',
     designation: 'Assistant Professor (Sr.G)',
-    department: 'Staff Coordinator 1',
+    department: 'Dept. of Information Technology',
     image: '/Staff and Office Bearres/Staff/Staff Coordinator 1.jpg'
   },
   {
     name: 'Ms. S. Kiruthika',
     designation: 'Assistant Professor (O.G)',
-    department: 'Staff Coordinator 2',
+    department: 'Dept. of Information Technology',
     image: '/Staff and Office Bearres/Staff/Staff Coordinator 2.jpg'
   }
 ];

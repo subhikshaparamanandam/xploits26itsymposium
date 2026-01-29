@@ -33,6 +33,7 @@ import Countdown from './components/Countdown';
 import EventCard from './components/EventCard';
 import EventModal from './components/EventModal';
 import HeroScrollSequence from './components/ui/HeroScrollSequence';
+import GalleryModal from './components/GalleryModal';
 
 // Custom Hook for Scroll Reveal
 const useRevealOnScroll = () => {
@@ -60,15 +61,13 @@ const useRevealOnScroll = () => {
 };
 
 const StudentCoordCard: React.FC<{ student: typeof STUDENT_COORDINATORS[0] }> = ({ student }) => {
-  const [showContact, setShowContact] = useState(false);
-
   return (
     <div className="reveal glass rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 text-center group transition-all hover:border-ice/30 hover:-translate-y-2 duration-500 relative overflow-hidden flex flex-col h-full min-h-[380px] md:min-h-[420px]">
       {/* Background Decorative Layer */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-ice/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
       <div className="relative z-10 flex flex-col h-full">
-        <div className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 md:mb-8 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 ring-4 ring-white/5 group-hover:ring-ice/20 relative shrink-0">
+        <div className="w-32 h-44 md:w-40 md:h-52 mx-auto mb-6 md:mb-8 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 ring-4 ring-white/5 group-hover:ring-ice/20 relative shrink-0">
           <img
             src={student.image}
             alt={student.name}
@@ -87,32 +86,6 @@ const StudentCoordCard: React.FC<{ student: typeof STUDENT_COORDINATORS[0] }> = 
         <p className="text-gray-500 text-[9px] md:text-[10px] leading-relaxed uppercase tracking-[0.2em] font-bold mb-auto">
           Council Member • IT Division
         </p>
-
-        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-white/5">
-          {showContact ? (
-            <div className="flex items-center justify-center space-x-3 md:space-x-4 animate-in fade-in zoom-in duration-300">
-              <a href={`https://wa.me/${student.phone}`} className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-green-500/10 text-green-500 hover:bg-green-500/20 transition-all hover:scale-110 border border-green-500/20">
-                <MessageCircle className="w-5 h-5" />
-              </a>
-              <a href={`tel:${student.phone}`} className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-ice/10 text-ice hover:bg-ice/20 transition-all hover:scale-110 border border-ice/20">
-                <Phone className="w-5 h-5" />
-              </a>
-              <button
-                onClick={() => setShowContact(false)}
-                className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 text-gray-500 hover:text-white transition-all"
-              >
-                <ArrowRight className="w-5 h-5 rotate-180" />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setShowContact(true)}
-              className="w-full py-3 md:py-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 text-gray-400 group-hover:text-white group-hover:bg-ice/10 group-hover:border-ice/30 transition-all text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] flex items-center justify-center"
-            >
-              Contact Protocol <Info className="ml-2 md:ml-3 w-4 h-4 opacity-50" />
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );
@@ -124,7 +97,9 @@ const App: React.FC = () => {
   const [isInHeroSection, setIsInHeroSection] = useState(false);
   const [isHeroRegistering, setIsHeroRegistering] = useState(false);
   const [isGlitching, setIsGlitching] = useState(false);
+
   const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   // Get unique categories from EVENTS
   const categories = ['All', ...new Set(EVENTS.map(event => event.category))];
@@ -164,10 +139,7 @@ const App: React.FC = () => {
   }, []);
 
   const handleHeroRegister = () => {
-    setIsHeroRegistering(true);
-    setTimeout(() => {
-      setIsHeroRegistering(false);
-    }, 2000);
+    window.open('http://docs.google.com/forms/d/e/1FAIpQLSfJed2QS8YsxEVeK5lXW7TlOnzNW9c-A5Feuwfj1YBItJKLHA/viewform?pli=1', '_blank');
   };
 
   const getIcon = (iconName: string) => {
@@ -202,9 +174,14 @@ const App: React.FC = () => {
             <a href="#team" className="hover:text-white transition-colors">Team</a>
             <a href="#contact" className="hover:text-white transition-colors">Contact</a>
           </div>
-          <button className="px-4 md:px-6 py-2 md:py-2.5 border border-white/10 rounded-full text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all shadow-xl backdrop-blur-sm">
-            Portal Access
-          </button>
+          <a
+            href="http://docs.google.com/forms/d/e/1FAIpQLSfJed2QS8YsxEVeK5lXW7TlOnzNW9c-A5Feuwfj1YBItJKLHA/viewform?pli=1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 md:px-6 py-2 md:py-2.5 border border-white/10 rounded-full text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all shadow-xl backdrop-blur-sm"
+          >
+            Register
+          </a>
         </div>
       </nav>
 
@@ -459,7 +436,7 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {STAFF_COORDINATORS.map((staff, idx) => (
               <div key={idx} className="reveal glass rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 text-center group transition-all hover:border-fire/30 hover:-translate-y-2 duration-500" style={{ transitionDelay: `${idx * 200}ms` }}>
-                <div className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 md:mb-8 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 ring-4 ring-white/5 group-hover:ring-fire/20 relative">
+                <div className="w-32 h-44 md:w-40 md:h-52 mx-auto mb-6 md:mb-8 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 ring-4 ring-white/5 group-hover:ring-fire/20 relative">
                   <img src={staff.image} alt={staff.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-fire/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
@@ -503,7 +480,7 @@ const App: React.FC = () => {
           <div className="reveal-left w-full md:w-1/2 h-64 md:h-full relative overflow-hidden group">
             <div className="absolute inset-0 bg-ice-dark/5 z-10 pointer-events-none"></div>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.852378943963!2d80.2227181152636!3d13.04434221650893!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52664539655f4d%3A0xe54911d33f2d2421!2sAnna%20University!5e0!3m2!1sen!2sin!4v1679313204961!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3890.2680217675515!2d80.03873787454442!3d12.825949418055925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52f70d79722631%3A0x49afcd4648f94894!2sSRM%20Valliammai%20Engineering%20College!5e0!3m2!1sen!2sin!4v1769664353540!5m2!1sen!2sin"
               className="w-full h-full opacity-40 grayscale contrast-125 invert brightness-90 hover:opacity-60 transition-opacity duration-700"
               loading="lazy"
               title="Venue Map"
@@ -517,8 +494,8 @@ const App: React.FC = () => {
                 <span className="font-heading font-bold text-lg md:text-xl">Symposium HQ</span>
               </div>
               <p className="text-[10px] md:text-xs text-gray-400 font-medium leading-relaxed uppercase tracking-wider">
-                Knowledge Hub • Dept of IT<br />
-                SRM Valliammai Engineering College<br />
+                Dept of IT<br />
+                <span className="text-white font-bold">SRM Valliammai Engineering College</span><br />
                 Chennai, Tamil Nadu - 603203
               </p>
             </div>
@@ -534,7 +511,12 @@ const App: React.FC = () => {
             <div className="relative z-10 glass p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] text-center max-w-md border-white/10 shadow-2xl backdrop-blur-md">
               <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 md:mb-6 tracking-tighter">Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-fire to-ice">Chronicles</span></h3>
               <p className="text-gray-400 text-[11px] md:text-sm mb-6 md:mb-10 font-medium leading-relaxed">A legacy of technical excellence. Revisit the moments that define the symposium experience.</p>
-              <button className="w-full py-3 md:py-4 glass rounded-xl md:rounded-2xl text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white hover:text-brand-bg transition-all duration-500 shadow-xl">Launch Gallery</button>
+              <button
+                onClick={() => setIsGalleryOpen(true)}
+                className="w-full py-3 md:py-4 glass rounded-xl md:rounded-2xl text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white hover:text-brand-bg transition-all duration-500 shadow-xl"
+              >
+                Launch Gallery
+              </button>
             </div>
           </div>
         </div>
@@ -546,19 +528,17 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 md:gap-20 mb-12 md:mb-20">
             <div className="lg:col-span-2 space-y-6 md:space-y-10">
               <div className="flex items-center space-x-3 md:space-x-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-tr from-fire to-ice rounded-xl flex items-center justify-center font-bold text-white text-xl md:text-2xl shadow-xl border border-white/10">X</div>
-                <div>
-                  <span className="font-heading font-bold text-2xl md:text-3xl tracking-tighter uppercase block">XPLOITS 26</span>
-                  <span className="text-[9px] md:text-[10px] tracking-[0.3em] font-bold text-gray-500 uppercase">Information Technology</span>
-                </div>
+                <img
+                  src="/xploits-header-logo.png"
+                  alt="XPLOITS 26"
+                  className="h-10 md:h-14 object-contain filter drop-shadow-[0_0_10px_rgba(249,115,22,0.3)]"
+                />
               </div>
               <p className="text-gray-500 text-sm md:text-base leading-relaxed max-w-md font-medium">
                 Designing the future requires the heat of innovation and the cold logic of engineering. Join us for the odyssey.
               </p>
               <div className="flex space-x-3 md:space-x-4">
-                <a href="#" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-xl md:rounded-2xl flex items-center justify-center hover:text-fire hover:bg-white/10 transition-all border border-white/5"><Instagram className="w-4 md:w-5 h-4 md:h-5" /></a>
-                <a href="#" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-xl md:rounded-2xl flex items-center justify-center hover:text-ice hover:bg-white/10 transition-all border border-white/5"><Twitter className="w-4 md:w-5 h-4 md:h-5" /></a>
-                <a href="#" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-xl md:rounded-2xl flex items-center justify-center hover:text-fire hover:bg-white/10 transition-all border border-white/5"><Linkedin className="w-4 md:w-5 h-4 md:h-5" /></a>
+                <a href="https://www.instagram.com/xploits26/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-xl md:rounded-2xl flex items-center justify-center hover:text-fire hover:bg-white/10 transition-all border border-white/5"><Instagram className="w-4 md:w-5 h-4 md:h-5" /></a>
               </div>
             </div>
 
@@ -580,11 +560,7 @@ const App: React.FC = () => {
                 </ul>
               </div>
               <div className="col-span-2 sm:col-span-1">
-                <h4 className="font-heading font-bold text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] mb-6 md:mb-10 text-white">HQ Details</h4>
-                <ul className="space-y-3 md:space-y-6 text-[9px] md:text-[11px] font-bold tracking-widest text-gray-500 uppercase">
-                  <li className="flex items-center"><Mail className="w-4 h-4 mr-3 text-fire" /> dispatch@xploits.tech</li>
-                  <li className="flex items-center"><Phone className="w-4 h-4 mr-3 text-ice" /> +91 98765 43210</li>
-                </ul>
+                {/* Contact Details Removed */}
               </div>
             </div>
           </div>
@@ -606,6 +582,12 @@ const App: React.FC = () => {
       <EventModal
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
+      />
+
+      {/* Gallery Modal */}
+      <GalleryModal
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
       />
     </div>
   );
