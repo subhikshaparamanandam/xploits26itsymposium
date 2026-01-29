@@ -204,7 +204,7 @@ const App: React.FC = () => {
           {/* Top Section - Compact Institutional Branding */}
           <div className="relative z-20 pt-20 md:pt-24">
             <div className="inline-flex items-center justify-center gap-4 md:gap-8 px-6 md:px-10 py-3 md:py-4 backdrop-blur-xl bg-black/40 rounded-2xl md:rounded-3xl border border-white/10 shadow-2xl">
-              <img src="/srm-logo.png" alt="SRM Logo" className="h-10 md:h-14 lg:h-16 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]" />
+              <img src="/srm-logo-v2.png" alt="SRM Logo" className="h-10 md:h-14 lg:h-16 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]" />
               <div className="text-center border-l border-r border-white/10 px-4 md:px-8">
                 <h2 className="text-sm md:text-xl lg:text-2xl font-heading font-black text-white tracking-tight uppercase leading-tight drop-shadow-lg">
                   SRM Valliammai Engineering College
@@ -217,7 +217,7 @@ const App: React.FC = () => {
                   <div className="h-[1px] w-4 md:w-8 bg-gradient-to-l from-transparent to-fire/50"></div>
                 </div>
               </div>
-              <img src="/vec-logo.png" alt="VEC Logo" className="h-10 md:h-14 lg:h-16 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]" />
+              <img src="/vec-logo-v2.png" alt="VEC Logo" className="h-10 md:h-14 lg:h-16 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]" />
             </div>
           </div>
 
