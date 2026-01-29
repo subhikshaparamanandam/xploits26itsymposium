@@ -190,10 +190,10 @@ const App: React.FC = () => {
       {/* Hero Section */}
       <HeroScrollSequence
         frameCount={80}
-        baseUrl="/hero-animation"
+        baseUrl="/hero-seq"
         prefix="lv_0_20260125155018_"
         extension="jpg"
-        mobileBaseUrl="/hero-animation-mobile"
+        mobileBaseUrl="/hero-seq-mobile"
         mobilePrefix="lv_0_20260125190320_"
         mobileCount={64}
       >

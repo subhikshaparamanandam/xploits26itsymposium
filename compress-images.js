@@ -32,7 +32,7 @@ async function compressDirectory(dirPath) {
 
         // Skip already small files (e.g. under 100KB) unless it's hero animation which we want SMALL
         // Hero frames need to be very optimized for smooth loading
-        const isHero = dirPath.includes('hero-animation');
+        const isHero = dirPath.includes('hero-seq');
 
         // Settings
         const quality = isHero ? 60 : 75; // More aggressive on hero frames
