@@ -74,8 +74,9 @@ export const EVENTS: EventData[] = [
     theme: 'fire',
     description: 'A data-driven simulation event integrating sports analytics and strategic decision-making through an IPL auction.',
     rules: [
+      'Each team must consist of 2 to 4 participants.',
       'Round 1: Technical quiz on IPL stats and data fundamentals.',
-      'Round 2: Live bidding to acquire players with a ₹100 Crores budget.',
+      'Round 2: Live bidding to acquire players with a ₹1300 Crores budget.',
       'Teams must construct a balanced squad (Batsmen, Bowlers, etc.).',
       'Evaluation based on selection strategy (70%) and dashboard design (30%).',
       'Recommended tools: Power BI, Tableau, or standard viz platforms.'
